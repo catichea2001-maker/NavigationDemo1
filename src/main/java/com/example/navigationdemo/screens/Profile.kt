@@ -12,8 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+
 @Composable
-fun Profile(onClearBackStack: () -> Unit) {
+fun Profile(onClearBackStack: () -> Unit) { // функция принимает колбэк для очистки стека навигации
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -21,13 +22,14 @@ fun Profile(onClearBackStack: () -> Unit) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                "Setup your profile",
+                "Настрой свой профиль",
                 style = MaterialTheme.typography.headlineSmall
             )
             Spacer(modifier = Modifier.size(30.dp))
             Button(onClick = {
+                onClearBackStack() // Очищает весь стек навигации, оставляя только начальный экран, чтобы нельзя было вернуться назад.
             }) {
-                Text(text = "Go Home")
+                Text(text = "На Главную")
             }
         }
     }

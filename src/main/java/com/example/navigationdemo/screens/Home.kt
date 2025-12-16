@@ -21,11 +21,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation3.runtime.NavKey
+import com.example.navigationdemo.WelcomeScreen
 
 @Composable
-fun Home(onNavigation: (NavKey) -> Unit) {
+fun Home(onNavigation: (NavKey) -> Unit) { // функция принимает колбэк для навигации
     var userName by remember { mutableStateOf("") }
-    val onTextChange = { text : String ->
+    val onTextChange = { text : String -> // для обновления состояния имени
         userName = text
     }
     Box(
@@ -35,18 +36,20 @@ fun Home(onNavigation: (NavKey) -> Unit) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             CustomTextField(
-                title = "Enter your name",
+                title = "Введите имя",
                 textState = userName,
                 onTextChange = onTextChange
             )
             Spacer(modifier = Modifier.size(30.dp))
             Button(onClick = {
+                onNavigation(WelcomeScreen(userName))
             }) {
-                Text(text = "Register")
+                Text(text = "Регистрация")
             }
         }
     }
 }
+
 @Composable
 fun CustomTextField(
     title: String,
@@ -55,8 +58,8 @@ fun CustomTextField(
 ) {
     OutlinedTextField(
         value = textState,
-        onValueChange = { onTextChange(it) },
-        singleLine = true,
+        onValueChange = { onTextChange(it) }, // При изменении текста вызываем колбэк
+        singleLine = true, // Однострочное поле
         label = { Text(title)},
         modifier = Modifier.padding(10.dp),
         textStyle = TextStyle(

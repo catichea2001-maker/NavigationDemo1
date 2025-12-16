@@ -11,13 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.navigationdemo.ui.theme.NavigationDemoTheme
 import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.example.navigationdemo.screens.*
+import com.example.navigationdemo.screens.Home
+import com.example.navigationdemo.screens.Profile
+import com.example.navigationdemo.screens.Welcome
+import com.example.navigationdemo.ui.theme.NavigationDemoTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,28 +38,43 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
-    val backStack = rememberNavBackStack(HomeScreen)
+    val backStack = rememberNavBackStack(HomeScreen) // Создаем стек навигации с начальным экраном HomeScreen
+    // Функция для навигации к новому экрану (добавляет ключ в стек)
     val onNavigation: (NavKey) -> Unit = {
-        backStack.add(it)
+        backStack.add(it) // Добавляем новый экран в конец стека
     }
+
+    // Функция для очистки стека навигации (оставляет только первый экран)
+    val onClearBackStack: () -> Unit = {
+        while (backStack.size > 1) { // Пока в стеке больше 1 элемента
+            backStack.removeLastOrNull() // Удаляем последний элемент
+        }
+    }
+
     NavDisplay(
-        backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
-        entryProvider = entryProvider {
-            entry<HomeScreen> {
+        backStack = backStack, // Передаем текущий стек навигации
+        onBack = { backStack.removeLastOrNull()
+//                        while (backStack.size > 1) {
+//                            backStack.removeLastOrNull()
+//                        }
+            // Удаляет все экраны из стека навигации, кроме самого первого (домашнего).
+        },
+        entryProvider = entryProvider { // Провайдер для определения экранов
+            entry<HomeScreen> { // Регистрируем экран HomeScreen
                 Home(onNavigation)
             }
-            entry<WelcomeScreen>(
+            entry<WelcomeScreen>( // Регистрируем экран WelcomeScreen
                 metadata = mapOf("extraDataKey" to "extraDataValue")
-            ) { key ->
-                Welcome(onNavigation, key.name)
+            ) { key -> // Получаем ключ навигации (WelcomeScreen)
+                Welcome(onNavigation, key.name) // Отображаем компонент Welcome с именем
             }
-            entry<ProfileScreen> {
-                Profile(onClearBackStack)
+            entry<ProfileScreen> { // Регистрируем экран ProfileScreen
+                Profile(onClearBackStack) // Отображаем компонент Profile
             }
         }
     )
 }
+
 
 @Preview(showBackground = true)
 @Composable
